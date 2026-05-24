@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Study Master | Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .flip-card { perspective: 1000px; height: 220px; }
+        .inner { position: relative; width: 100%; height: 100%; transition: transform 0.8s; transform-style: preserve-3d; }
+        .flip-card:hover .inner { transform: rotateY(180deg); }
+        .front, .back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; padding: 20px; border-radius: 1rem; border: 1px solid #e5e7eb; }
+        .back { transform: rotateY(180deg); background: #4f46e5; color: white; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Navbar -->
+    <header class="glass sticky top-0 z-50 border-b p-4 flex justify-between items-center px-8 shadow-sm">
+        <h1 class="text-2xl font-black text-indigo-900 tracking-tight">STUDY<span class="text-indigo-500">AI</span></h1>
+        <div class="flex gap-4">
+            <button class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full font-semibold">My Study Sets</button>
+            <div class="w-10 h-10 bg-indigo-600 rounded-full"></div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6 space-y-8">
+        <!-- Control Panel -->
+        <section class="bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
+            <h2 class="text-xl font-bold mb-4">Generate New Study Material</h2>
+            <div class="flex gap-4">
+                <input type="text" id="urlInput" placeholder="Paste YouTube link (e.g., https://youtube.com/watch?v=...)" 
+                       class="flex-1 p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-4 ring-indigo-100">
+                <button onclick="handleGeneration()" id="genBtn" class="px-8 py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition">Analyze Video</button>
+            </div>
+        </section>
+
+        <!-- Stats/Results -->
+        <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamic Flashcards injected here -->
+        </div>
+    </main>
+
+    <script>
+        // Data State Management
+        let appState = {
+            cards: [],
+            isGenerating: false
+        };
+
+        // Core App Logic
+        async function handleGeneration() {
+            const url = document.getElementById('urlInput').value;
+            const btn = document.getElementById('genBtn');
+            
+            if (!url) return alert("Please enter a link!");
+            
+            appState.isGenerating = true;
+            btn.innerText = "AI Processing...";
+            btn.disabled = true;
+
+            // This is where you would link to your Python Backend
+            // await fetch('/api/process', { method: 'POST', body: JSON.stringify({ url }) });
+            
+            await new Promise(r => setTimeout(r, 2500)); // Simulate AI Thinking
+            
+            appState.cards = [
+                { q: "What is an Ionic Bond?", a: "The electrostatic attraction between oppositely charged ions." },
+                { q: "Define Valency", a: "The combining capacity of an element." },
+                { q: "What is a Chemical Equation?", a: "The symbolic representation of a chemical reaction." }
+            ];
+            
+            renderCards();
+            btn.innerText = "Analyze Video";
+            btn.disabled = false;
+        }
+
+        function renderCards() {
+            const container = document.getElementById('resultsGrid');
+            container.innerHTML = appState.cards.map(c => `
+                <div class="flip-card">
+                    <div class="inner">
+                        <div class="front bg-white font-bold text-center">${c.q}</div>
+                        <div class="back text-center font-medium">${c.a}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
